@@ -5,12 +5,14 @@ public class CallLogEntry {
     private String name;
     private String type;
     private String date;
+    private String duration;
 
-    public CallLogEntry(String number, String name, String type, String date) {
+    public CallLogEntry(String number, String name, String type, String date, String duration) {
         this.number = number;
         this.name = name;
         this.type = type;
         this.date = date;
+        this.duration = duration;
     }
 
     public String getNumber() {
@@ -43,6 +45,14 @@ public class CallLogEntry {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     // Getters and setters
