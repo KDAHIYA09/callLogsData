@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private void readCallLogs() {
         ArrayList<CallLogEntry> callLogEntries = new ArrayList<>();
         int count = 0;
-        String number, name, type, date, duration;
+        String number, name, type, date, duration, time;
+        int imageResource = 0;
 
         // Define the columns to retrieve
         String[] projection = {
@@ -92,39 +94,53 @@ public class MainActivity extends AppCompatActivity {
 
                     duration = DurationFormat(duration);
 
+                    SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
+                    time = timeFormatter.format(new Date(Long.parseLong(date)));
+
+// this give 24 hours format with am pm which is inserted with help og a symbole
+//                    SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss a", Locale.getDefault());
+//                    time = timeFormatter.format(new Date(Long.parseLong(date)));
+
                     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy");
                     date = dateFormatter.format(new Date(Long.parseLong(date)));
+
+
 
                     switch(Integer.parseInt(type)){
                         case CallLog.Calls.INCOMING_TYPE:
                             type = "Incoming";
+                            imageResource = R.drawable.incoming_call_rounded_svgrepo_com;
                             break;
                         case CallLog.Calls.OUTGOING_TYPE:
+                            imageResource = R.drawable.outgoing_call_svgrepo_com;
                             type = "Outgoing";
                             break;
                         case CallLog.Calls.MISSED_TYPE:
                             type = "Missed";
+                            imageResource = R.drawable.call_miss_svgrepo_com;
                             break;
                         case CallLog.Calls.VOICEMAIL_TYPE:
                             type = "Voicemail";
+                            imageResource = R.drawable.voicemail_svgrepo_com;
                             break;
                         case CallLog.Calls.REJECTED_TYPE:
                             type = "Rejected";
+                            imageResource = R.drawable.rejectedcall;
                             break;
                         case CallLog.Calls.BLOCKED_TYPE:
                             type = "Blocked";
+                            imageResource = R.drawable.callblocked;
                             break;
                         case CallLog.Calls.ANSWERED_EXTERNALLY_TYPE:
                             type = "Externally Answered";
+                            imageResource = R.drawable.nacall;
                             break;
                         default:
                             type = "NA";
+                            imageResource = R.drawable.nacall;
                     }
 
-                    // Convert the date to a readable format (optional)
-                    //Date callDate = new Date(Long.parseLong(date));
-                    // Add the call log entry to the ArrayList
-                    callLogEntries.add(new CallLogEntry(number, name, type, date.toString(), duration));
+                    callLogEntries.add(new CallLogEntry(number, name, type, date.toString(), duration,time, imageResource));
                 } while (cursor.moveToNext());
                 count = count+cursor.getCount();
             }
@@ -136,12 +152,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             list = new ArrayList<>();
             for (CallLogEntry entry : callLogEntries) {
-                HashMap<String, String> item = new HashMap<>();
-                item.put("line1", "Name: "+entry.getName());
-                item.put("line2", "Phone no.: "+entry.getNumber());
-                item.put("line3", "Type: "+entry.getType());
-                item.put("line4", "Date: "+entry.getDate());
-                item.put("line5", "Duration: "+entry.getDuration());
+                HashMap<String, Object> item = new HashMap<>();
+                item.put("line1", entry.getImage());
+                item.put("line2", "Name: "+entry.getName());
+                item.put("line3", "Phone no.: "+entry.getNumber());
+                item.put("line4", "        "+entry.getType());
+                item.put("line5", "Date: "+entry.getDate());
+                item.put("line6", "Time: "+entry.getTime());
+                item.put("line7", "Duration: "+entry.getDuration());
                 list.add(item);
             }
         }catch (Exception e){
@@ -153,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 list,
                 R.layout.sample_layout,
-                new String[]{"line1", "line2", "line3", "line4", "line5"},
-                new int[] {R.id.textViewNumber, R.id.textViewName, R.id.textViewType, R.id.textViewDate, R.id.textViewDuration}
+                new String[]{"line1", "line2", "line3", "line4", "line5","line6","line7"},
+                new int[] {R.id.imageViewCallType, R.id.textViewNumber, R.id.textViewName, R.id.textViewType, R.id.textViewDate, R.id.textViewTime, R.id.textViewDuration}
         );
 
         // Set the adapter to the ListView

@@ -6,13 +6,17 @@ public class CallLogEntry {
     private String type;
     private String date;
     private String duration;
+    private String time;
+    private int image;
 
-    public CallLogEntry(String number, String name, String type, String date, String duration) {
+    public CallLogEntry(String number, String name, String type, String date, String duration, String time, int image) {
         this.number = number;
         this.name = name;
         this.type = type;
         this.date = date;
         this.duration = duration;
+        this.time = time;
+        this.image = image;
     }
 
     public String getNumber() {
@@ -53,6 +57,22 @@ public class CallLogEntry {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     // Getters and setters
